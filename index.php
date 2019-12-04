@@ -1,8 +1,42 @@
 <?php
 
+
+function vision($u, $x, $i, $y)
+{
+    $range = 1;
+    if ($u == $x + $range && $i == $y + $range) {
+        return 'green';
+    }
+    if ($u == $x - $range && $i == $y + $range) {
+        return 'green';
+    }
+    if ($u == $x - $range && $i == $y - $range) {
+        return 'green';
+    }
+    if ($u == $x + $range && $i == $y - $range) {
+        return 'green';
+    }
+    if ($u == $x - $range && $i == $y) {
+        return 'green';
+    }
+    if ($u == $x + $range && $i == $y) {
+        return 'green';
+    }
+    if ($u == $x && $i == $y - $range) {
+        return 'green';
+    }
+    if ($u == $x && $i == $y + $range) {
+        return 'green';
+    }
+    return 'gray';
+}
+
+
 $x = $_GET["x"];
 $y = $_GET["y"];
 ?>
+
+
 <html>
 <body>
 <table>
@@ -12,33 +46,20 @@ $y = $_GET["y"];
             <?php for ($i = 0; $i < 11; $i++) { ?>
                 <td>
 
-
-                    <?php if ($u == $x && $i == $y): ?>
-                        <img src="Unbenannt.PNG" style="width: 50px; height: 50px;">
-                    <?php else: ?>
-                    <a href="index.php?x=<?php echo $u ?>&y=<?php echo $i ?>">
-                        <?php if ($u == $x + 1 && $i == $y + 1): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x - 1 && $i == $y + 1): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x - 1 && $i == $y - 1): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x + 1 && $i == $y - 1): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x - 1 && $i == $y): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x + 1 && $i == $y): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x && $i == $y - 1): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php elseif ($u == $x && $i == $y + 1): ?>
-                            <img src="Grüne.png" style="width: 50px; height: 50px;">
-                        <?php else: ?>
-                            </a>
-                            <img src="Download.png" style="width: 50px; height: 50px;">
-                        <?php endif ?>
-                    <?php endif ?>
-
+                <?php
+                    if ($u == $x && $i == $y){
+                        echo '<img src="player.PNG" style="width: 50px; height: 50px;">';
+                    }else{
+                        if(vision($u,$x,$i,$y) == 'green'){
+                            echo '<a href="index.php?x='.$i.'&y='.$u.'">';
+                            echo '<img src="Grüne.png" style="width: 50px; height: 50px;">';
+                            echo '</a>';
+                        }
+                        if(vision($u,$x,$i,$y) == 'gray'){
+                            echo '<img src="gray.png" style="width: 50px; height: 50px;">';
+                        }
+                    }
+                ?>
                 </td>
             <?php } ?>
         </tr>

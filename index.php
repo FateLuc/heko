@@ -1,43 +1,32 @@
 <?php
 
+require_once ('game/FieldRenderer.php');
+require_once ('game/Player.php');
+require_once ('game/Map.php');
 
-function vision($u, $x, $i, $y)
-{
-    $range = 1;
-    if ($u == $x + $range && $i == $y + $range) {
-        return 'green';
-    }
-    if ($u == $x - $range && $i == $y + $range) {
-        return 'green';
-    }
-    if ($u == $x - $range && $i == $y - $range) {
-        return 'green';
-    }
-    if ($u == $x + $range && $i == $y - $range) {
-        return 'green';
-    }
-    if ($u == $x - $range && $i == $y) {
-        return 'green';
-    }
-    if ($u == $x + $range && $i == $y) {
-        return 'green';
-    }
-    if ($u == $x && $i == $y - $range) {
-        return 'green';
-    }
-    if ($u == $x && $i == $y + $range) {
-        return 'green';
-    }
-    return 'gray';
+$x = 5;
+if(isset($_GET["x"])){
+    $x = $_GET["x"];
+}
+$y = 5;
+if(isset($_GET["y"])){
+    $y = $_GET["y"];
 }
 
+$map = new Map(11);
 
-$x = $_GET["x"];
-$y = $_GET["y"];
+if(isset($_GET['flock'])){
+    $map->insertItems();
+}
+
+$player = new Player($x,$y);
+
 ?>
 
-
-<html>
+<html lang ="de">
+<head>
+    <title>Fress die Ziege</title>
+</head>
 <body>
 <table>
     <?php for ($u = 0; $u < 11; $u++) { ?>
@@ -46,29 +35,49 @@ $y = $_GET["y"];
             <?php for ($i = 0; $i < 11; $i++) { ?>
                 <td>
 
-                <?php
-                    if ($u == $x && $i == $y){
-                        echo '<img src="player.PNG" style="width: 50px; height: 50px;">';
-                    }else{
-                        if(vision($u,$x,$i,$y) == 'green'){
-                            echo '<a href="index.php?x='.$i.'&y='.$u.'">';
-                            echo '<img src="Grüne.png" style="width: 50px; height: 50px;">';
-                            echo '</a>';
-                        }
-                        if(vision($u,$x,$i,$y) == 'gray'){
-                            echo '<img src="gray.png" style="width: 50px; height: 50px;">';
+                    <?php
+                    if ($player->isOnField($u,$i)) {
+                        FieldRenderer::render('player');
+                        $map->storeItem($u,$i);
+                    } else {
+                        if ($map->hasItem($u, $i)) {
+                            if ($player->vision($u, $i) == 'green' ) {
+                                echo '<a href="index.php?x=' . $u . '&y=' . $i . '">';
+                                FieldRenderer::render('goat');
+                                echo '</a>';
+                            }
+                            else{
+                                FieldRenderer::render('goat');
+                            }
+                        } else {
+                            if ($player->vision($u, $i) == 'green' ) {
+                                echo '<a href="index.php?x=' . $u . '&y=' . $i . '">';
+                                FieldRenderer::render('green');
+                                echo '</a>';
+                            }
+                            if ($player->vision($u, $i) == 'gray') {
+                                FieldRenderer::render('gray');
+                            }
+
                         }
                     }
-                ?>
+                    ?>
                 </td>
             <?php } ?>
         </tr>
     <?php } ?>
 </table>
-<script>
-    function border() {
 
-    }
-</script>
+
+
+<form>
+    <input type="submit" name="flock" value="flock = new level">
+</form>
+<h1>Gefressene Marshmallows</h1>
+<?php foreach($map ->item_indicator() as $simon){
+    echo FieldRenderer::render('goat');
+}
+
+?>
 </body>
 </html>
